@@ -8,6 +8,6 @@ Schell script for extracting trees from the tree file output of the bp&p softwar
 
 #### Usage
 
-```sh extract_trees.sh <number_of_species>```
+```$>sh extract_trees.sh <number_of_species>```
 
 where the <number_of_species> is the number of species you wish to have in the trees kept by the script.
