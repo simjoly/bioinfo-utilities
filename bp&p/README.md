@@ -4,7 +4,7 @@ Simon Joly, 2015
 
 ## extract_trees.sh
 
-Schell script for extracting trees from the tree file output of the bp&p software. Basically, it will extract trees with a given number of species (given by the command line) and write them in nexus format in the file "out.trees". This tree can then be read in TreeAnnotator.
+Schell script for extracting trees from the tree file output of the bp&p software. Basically, it will extract trees with a given number of species (given by the command line) from the file "mcmc.txt" and write them in nexus format in the file "out.trees". This tree can then be read in TreeAnnotator.
 
 #### Usage
 
