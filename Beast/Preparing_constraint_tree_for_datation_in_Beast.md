@@ -24,7 +24,7 @@ library(ape)
 tree <- read.nexus(file.choose())
 ```
 
-Then you need to get the node to which apply constraints. For the example given above with Sapindopsis, you can get the node number with the function `mrca(tree)` that returns the most recent common ancestor (mrca) for the taxa given to the function. For instance,
+Then you need to get the node to which you want to apply age constraints. For the example given above with Sapindopsis, you can get the node number with the function `mrca(tree)` that returns the most recent common ancestor (mrca) for the taxa given to the function. For instance,
 
 ```r
 # Get node number for different constraints
@@ -33,7 +33,7 @@ Then you need to get the node to which apply constraints. For the example given 
 mrca(tree)["Nelumbo_nucifera","Platanus_occidentalis"]
 ```
 
-You can also do this for other constraints.
+You can also do this for other nodes as well.
 
 ```r
 # 2. Tricolpate pollen = 86
@@ -50,6 +50,8 @@ min.ages <- c(125,105)
 # vector of max. ages
 max.ages <- c(140,115)
 ```
+
+With this, you assign a minimum age of 125 and a maximum age of 140 to the node 86.
 
 Finaly, you can use the fonction chronopl to generate a chronogram that is compatible with the above constraints. Of course, the tree has to be compatible with these.
 
