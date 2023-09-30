@@ -1,6 +1,11 @@
 #!/usr/bin/python
 
-# Source: https://raw.githubusercontent.com/CoBiG2/RAD_Tools/6648d1ce1bc1e4c2d2e4256abdefdf53dc079b8c/vcf_parser.py
+# Copyright 2023 Simon Joly under the terms of the GNU General Public 
+# License as published by the Free Software Foundation, either version 
+# 3 of the License, or (at your option) any later version.
+
+# Adapted from script described below to handle loci along chromosomes.
+# It also fixes a bug in the --center-snp option.
 
 # Copyright 2015 Diogo N. Silva <o.diogosilva@gmail.com>
 # compare_pairs.py is free software: you can redistribute it and/or modify
@@ -88,6 +93,7 @@ def remove_sites(vcf_file, mode="inv", suffix="_NoInv.vcf"):
                         vcf_out.write(line)
 
 
+
 def filter_one_snp(vcf_file):
     """
     Filters a VCF file so that only one SNP per locus (the first) is retained
@@ -95,7 +101,7 @@ def filter_one_snp(vcf_file):
 
     vcf_output = vcf_file.split(".")[0] + "OneSNP.vcf"
 
-    chrom_list = []
+    locus_list = []
 
     with open(vcf_file) as vcf_handle, open(vcf_output, "w") as vcf_out:
 
@@ -106,12 +112,19 @@ def filter_one_snp(vcf_file):
 
             elif line.strip() != "":
 
-                # Get chrom number
+                # Get chromosome
                 chrom = line.split()[0]
 
-                if chrom not in chrom_list:
+                # Get locus
+                locus_position = line.split()[2]
+                locus = locus_position.split("_")[0]
+
+                # Append chromosome to locus name
+                locus = chrom + "_" + locus
+
+                if locus not in locus_list:
                     vcf_out.write(line)
-                    chrom_list.append(chrom)
+                    locus_list.append(locus)
 
 
 def filter_random_snp(vcf_file):
@@ -121,7 +134,7 @@ def filter_random_snp(vcf_file):
 
     vcf_output = vcf_file.split(".")[0] + "RandSNP.vcf"
 
-    current_chrom = 0
+    current_locus = ""
     loci_snps = []
 
     with open(vcf_file) as vcf_handle, open(vcf_output, "w") as vcf_out:
@@ -133,17 +146,29 @@ def filter_random_snp(vcf_file):
 
             elif line.strip() != "":
 
-                # Get chrom number
+                # Get chromosome
                 chrom = line.split()[0]
 
-                if chrom != current_chrom and loci_snps != []:
+                # Get locus
+                locus_position = line.split()[2]
+                locus = locus_position.split("_")[0]
+
+                # Append chromosome to locus name
+                locus = chrom + "_" + locus
+
+                if locus != current_locus and loci_snps != []:
                     choosen = random.choice(loci_snps)
                     vcf_out.write(choosen)
                     loci_snps = [line]
-                    current_chrom = chrom
+                    current_locus = locus
+
+                elif locus != current_locus and loci_snps == []:
+                    loci_snps = [line]
+                    current_locus = locus
 
                 else:
                     loci_snps += [line]
+
         vcf_out.write(random.choice(loci_snps))
 
 
@@ -154,8 +179,9 @@ def filter_center_snp(vcf_file):
 
     vcf_output = vcf_file.split(".")[0] + "CenterSNP.vcf"
 
-    current_chrom = ""
+    current_locus = ""
     line_list = []
+    pos_list = []
 
     with open(vcf_file) as vcf_handle, open(vcf_output, "w") as vcf_out:
 
@@ -166,27 +192,36 @@ def filter_center_snp(vcf_file):
 
             elif line.strip() != "":
 
-                # Get chrom number
+                # Get chromosome
                 chrom = line.split()[0]
+
+                # Get locus
+                locus_position = line.split()[2]
+                locus = locus_position.split("_")[0]
+
+                # Append chromosome to locus name
+                locus = chrom + "_" + locus
 
                 # Get SNP position
                 pos = int(line.split()[1])
 
-                if chrom != current_chrom and current_chrom != "":
-                    closest = min(pos_list, key=lambda x: abs(x - 45))
+                if locus != current_locus and current_locus != "":
+                    mean_pos = sum(pos_list) / len(pos_list)
+                    closest = min(pos_list, key=lambda x: abs(x - mean_pos))
                     vcf_out.write(line_list[pos_list.index(closest)])
                     pos_list = [pos]
                     line_list = [line]
-                    current_chrom = chrom
-                elif chrom != current_chrom:
+                    current_locus = locus
+                elif locus != current_locus:
                     pos_list = [pos]
                     line_list = [line]
-                    current_chrom = chrom
+                    current_locus = locus
                 else:
                     pos_list += [pos]
                     line_list += [line]
 
-        closest = min(pos_list, key=lambda x: abs(x - 45))
+        mean_pos = sum(pos_list) / len(pos_list)
+        closest = min(pos_list, key=lambda x: abs(x - mean_pos))
         vcf_out.write(line_list[pos_list.index(closest)])
 
 
