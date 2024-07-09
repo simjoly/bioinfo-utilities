@@ -11,7 +11,7 @@ Python3 script that parses a ".loci" file from ipyrad into multiple phylip files
 
 ## remove_pcr_dup.py
 
-This Python3 script is used to remove PCR duplicates of RAD-seq data when a random nucleotide index in incorporated in the Illumina adaptors by PCR. It basically removes reads that have the same sequences for both forward and reverse reads.
+This Python3 script is used to remove PCR duplicates of RAD-seq data when a random nucleotide index in incorporated in the Illumina adaptors by PCR. It basically removes reads that have the same sequences for both forward and reverse reads and for a random nucleotide index incorporated by PCR.
 
 #### Usage
 
