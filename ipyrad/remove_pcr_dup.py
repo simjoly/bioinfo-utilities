@@ -4,7 +4,7 @@
 #
 # remove_pcr_dup.py
 #
-# Copyright 2024 Simon Joly under the terms of the GNU General Public 
+# Copyright 2024-2025 Simon Joly under the terms of the GNU General Public 
 # License as published by the Free Software Foundation, either version 
 # 3 of the License, or (at your option) any later version.
 #
@@ -82,14 +82,14 @@ def Main():
 def ParseArg():
     parser = argparse.ArgumentParser(description="Remove pairs of reads that are identical. If "
         "you have a random index incorporated by PCR, identify the file containing the index with "
-        "the -index argument to remove PCR duplicates. Exported files will have a 'nodup_' prefix "
+        "the -index argument to remove PCR duplicates. If the random index is at the begining of "
+        "the read1, you don't have to provide an index file. Exported files will have a 'nodup_' prefix "
         "appended to them.")
-    parser.add_argument("-read1", dest="read1", type=str, help="forward input fastq/fasta file")
-    parser.add_argument("-read2", dest="read2", type=str, help="reverse input fastq/fasta file")
-    parser.add_argument("-index", dest="index", type=str, default="", help="random index file")
-    parser.add_argument("-nbreads", dest="number_of_seqs", type=int, default=0, help="Provide number of reads in the files")
+    parser.add_argument("-read1", dest="read1", type=str, help="forward input fastq compressed file")
+    parser.add_argument("-read2", dest="read2", type=str, help="reverse input fastq compressed file")
+    parser.add_argument("-index", dest="index", type=str, default="", help="random index fastq compressed file")
+    parser.add_argument("-nbreads", dest="number_of_seqs", type=int, default=0, help="Provide number of reads in the files (optional)")
     return parser.parse_args()
 
 if __name__ == '__main__':
     Main()
-    
